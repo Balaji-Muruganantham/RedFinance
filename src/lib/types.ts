@@ -23,3 +23,9 @@ export type Transaction = {
   quantity: number;
   price: number;
 };
+
+export type PortfolioSnapshot = {
+  date: string;
+  portfolioValue: number;
+  benchmarkValue: number;
+};

@@ -3,14 +3,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Holding } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { ArrowDown, ArrowUp, DollarSign, Wallet } from 'lucide-react';
+import { ArrowDown, ArrowUp, DollarSign, Percent, TrendingUp, Wallet } from 'lucide-react';
 import { useMemo } from 'react';
 
 type PortfolioSummaryProps = {
   holdings: Holding[];
+  portfolioXirr: number;
+  benchmarkXirr: number;
 };
 
-export default function PortfolioSummary({ holdings }: PortfolioSummaryProps) {
+export default function PortfolioSummary({ holdings, portfolioXirr, benchmarkXirr }: PortfolioSummaryProps) {
   const { totalValue, totalGainLoss, gainLossPercentage } = useMemo(() => {
     const totalValue = holdings.reduce((acc, h) => acc + h.quantity * h.price, 0);
     const totalCost = holdings.reduce((acc, h) => acc + h.quantity * h.costBasis, 0);
@@ -30,9 +32,11 @@ export default function PortfolioSummary({ holdings }: PortfolioSummaryProps) {
       currency: 'USD',
     }).format(value);
   };
+  
+  const formatPercentage = (value: number) => `${value.toFixed(2)}%`;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Value</CardTitle>
@@ -77,6 +81,26 @@ export default function PortfolioSummary({ holdings }: PortfolioSummaryProps) {
           <p className="text-xs text-muted-foreground">
             {dailyChangePercentage.toFixed(2)}% today
           </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Portfolio XIRR</CardTitle>
+          <Percent className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{formatPercentage(portfolioXirr)}</div>
+          <p className="text-xs text-muted-foreground">Annualized return</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Benchmark XIRR</CardTitle>
+          <TrendingUp className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{formatPercentage(benchmarkXirr)}</div>
+          <p className="text-xs text-muted-foreground">S&P 500 equivalent</p>
         </CardContent>
       </Card>
     </div>

@@ -6,8 +6,8 @@ import { getPortfolioAnalysis } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { mockHoldings, mockTransactions } from '@/lib/mock-data';
-import type { Holding, Transaction } from '@/lib/types';
+import { mockHoldings, mockTransactions, mockPortfolioHistory, mockXirr } from '@/lib/mock-data';
+import type { Holding, Transaction, PortfolioSnapshot } from '@/lib/types';
 import { Bot, FileUp, Landmark, Plus, ListTree } from 'lucide-react';
 import AddEditHoldingDialog from './add-edit-holding-dialog';
 import AiAnalysisView from './ai-analysis-view';
@@ -16,10 +16,13 @@ import HoldingsTable from './holdings-table';
 import PortfolioSummary from './portfolio-summary';
 import TransactionsTable from './transactions-table';
 import DetailedHoldingsView from './detailed-holdings-view';
+import PortfolioGrowthChart from './portfolio-growth-chart';
 
 export default function PortfolioPage() {
   const [holdings, setHoldings] = useState<Holding[]>(mockHoldings);
   const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
+  const [portfolioHistory] = useState<PortfolioSnapshot[]>(mockPortfolioHistory);
+  const [xirr] = useState(mockXirr);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingHolding, setEditingHolding] = useState<Holding | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<AnalyzePortfolioOutput | null>(null);
@@ -130,13 +133,19 @@ export default function PortfolioPage() {
           
           <TabsContent value="overview">
             <div className="grid gap-6">
-              <PortfolioSummary holdings={holdings} />
+              <PortfolioSummary 
+                holdings={holdings} 
+                portfolioXirr={xirr.portfolio} 
+                benchmarkXirr={xirr.benchmark} 
+              />
+              <PortfolioGrowthChart data={portfolioHistory} />
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="md:col-span-2">
                   <HoldingsTable
-                    holdings={holdings}
+                    holdings={holdings.filter(h => h.type === 'Stock')}
                     onEdit={handleOpenEditDialog}
                     onDelete={handleDeleteHolding}
+                    title="Top Stock Holdings"
                   />
                 </div>
                 <AllocationChart holdings={holdings} />
