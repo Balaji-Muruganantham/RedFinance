@@ -1,11 +1,55 @@
 import type { Holding, Transaction } from './types';
 
 export const mockHoldings: Holding[] = [
-  { id: '1', ticker: 'AAPL', name: 'Apple Inc.', quantity: 50, price: 175.30, costBasis: 150.00, sector: 'Technology' },
-  { id: '2', ticker: 'MSFT', name: 'Microsoft Corp.', quantity: 30, price: 340.54, costBasis: 280.75, sector: 'Technology' },
-  { id: '3', ticker: 'JNJ', name: 'Johnson & Johnson', quantity: 40, price: 165.21, costBasis: 160.10, sector: 'Healthcare' },
-  { id: '4', ticker: 'VTSAX', name: 'Vanguard Total Stock Market Index Fund', quantity: 20, price: 110.88, costBasis: 95.50, sector: 'Mutual Fund' },
-  { id: '5', ticker: 'JPM', name: 'JPMorgan Chase & Co.', quantity: 60, price: 155.76, costBasis: 140.20, sector: 'Financials' },
+  { id: '1', type: 'Stock', ticker: 'AAPL', name: 'Apple Inc.', quantity: 50, price: 175.30, costBasis: 150.00, sector: 'Technology' },
+  { id: '2', type: 'Stock', ticker: 'MSFT', name: 'Microsoft Corp.', quantity: 30, price: 340.54, costBasis: 280.75, sector: 'Technology' },
+  { id: '3', type: 'Stock', ticker: 'JNJ', name: 'Johnson & Johnson', quantity: 40, price: 165.21, costBasis: 160.10, sector: 'Healthcare' },
+  { 
+    id: '4', 
+    type: 'Mutual Fund', 
+    ticker: 'VTSAX', 
+    name: 'Vanguard Total Stock Market Index Fund', 
+    quantity: 20, 
+    price: 110.88, 
+    costBasis: 95.50, 
+    sector: 'Index Fund',
+    peRatio: 24.5,
+    dailyRollingReturns: 1.2,
+    categoryAverageReturn: 0.9,
+    historicalPE: 22.1,
+    categoryPriceIndicator: 'overpriced'
+  },
+  { id: '5', type: 'Stock', ticker: 'JPM', name: 'JPMorgan Chase & Co.', quantity: 60, price: 155.76, costBasis: 140.20, sector: 'Financials' },
+  { 
+    id: '6', 
+    type: 'Mutual Fund', 
+    ticker: 'VFIAX', 
+    name: 'Vanguard 500 Index Fund Admiral Shares', 
+    quantity: 25, 
+    price: 450.76, 
+    costBasis: 410.20, 
+    sector: 'Index Fund',
+    peRatio: 25.2,
+    dailyRollingReturns: -0.5,
+    categoryAverageReturn: -0.2,
+    historicalPE: 26.5,
+    categoryPriceIndicator: 'underpriced'
+  },
+  { 
+    id: '7', 
+    type: 'Mutual Fund', 
+    ticker: 'AGTHX', 
+    name: 'American Funds Growth Fund of America', 
+    quantity: 100, 
+    price: 75.12, 
+    costBasis: 65.00, 
+    sector: 'Growth Fund',
+    peRatio: 33.1,
+    dailyRollingReturns: 0.8,
+    categoryAverageReturn: 1.1,
+    historicalPE: 33.0,
+    categoryPriceIndicator: 'neutral'
+  },
 ];
 
 export const mockTransactions: Transaction[] = [

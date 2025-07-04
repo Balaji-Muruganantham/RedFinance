@@ -1,21 +1,21 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import type { AnalyzePortfolioOutput } from '@/ai/flows/portfolio-insights';
 import { getPortfolioAnalysis } from '@/app/actions';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { mockHoldings, mockTransactions } from '@/lib/mock-data';
 import type { Holding, Transaction } from '@/lib/types';
-import { Bot, FileUp, Landmark, Plus, BotMessageSquare } from 'lucide-react';
+import { Bot, FileUp, Landmark, Plus, ListTree } from 'lucide-react';
 import AddEditHoldingDialog from './add-edit-holding-dialog';
 import AiAnalysisView from './ai-analysis-view';
 import AllocationChart from './allocation-chart';
 import HoldingsTable from './holdings-table';
 import PortfolioSummary from './portfolio-summary';
 import TransactionsTable from './transactions-table';
+import DetailedHoldingsView from './detailed-holdings-view';
 
 export default function PortfolioPage() {
   const [holdings, setHoldings] = useState<Holding[]>(mockHoldings);
@@ -27,7 +27,8 @@ export default function PortfolioPage() {
   const { toast } = useToast();
 
   const handleAddHolding = (holding: Omit<Holding, 'id'>) => {
-    setHoldings(prev => [...prev, { ...holding, id: Date.now().toString() }]);
+    const newHolding = { ...holding, id: Date.now().toString(), type: 'Stock' } as Holding;
+    setHoldings(prev => [...prev, newHolding ]);
   };
 
   const handleEditHolding = (holdingToUpdate: Holding) => {
@@ -115,8 +116,12 @@ export default function PortfolioPage() {
       </header>
       <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-md mb-4">
+          <TabsList className="grid w-full grid-cols-4 max-w-xl mb-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="detailed-holdings">
+              <ListTree className="mr-2 h-4 w-4" />
+              Detailed Holdings
+            </TabsTrigger>
             <TabsTrigger value="transactions">Transactions</TabsTrigger>
             <TabsTrigger value="ai-insights">
               <Bot className="mr-2 h-4 w-4" /> AI Insights
@@ -139,6 +144,14 @@ export default function PortfolioPage() {
             </div>
           </TabsContent>
           
+          <TabsContent value="detailed-holdings">
+            <DetailedHoldingsView 
+              holdings={holdings}
+              onEdit={handleOpenEditDialog}
+              onDelete={handleDeleteHolding}
+            />
+          </TabsContent>
+
           <TabsContent value="transactions">
             <TransactionsTable transactions={transactions} />
           </TabsContent>

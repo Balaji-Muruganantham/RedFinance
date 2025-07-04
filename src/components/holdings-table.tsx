@@ -24,9 +24,10 @@ type HoldingsTableProps = {
   holdings: Holding[];
   onEdit: (holding: Holding) => void;
   onDelete: (id: string) => void;
+  title?: string;
 };
 
-export default function HoldingsTable({ holdings, onEdit, onDelete }: HoldingsTableProps) {
+export default function HoldingsTable({ holdings, onEdit, onDelete, title }: HoldingsTableProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -37,7 +38,7 @@ export default function HoldingsTable({ holdings, onEdit, onDelete }: HoldingsTa
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Your Holdings</CardTitle>
+        <CardTitle>{title || 'Your Holdings'}</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
