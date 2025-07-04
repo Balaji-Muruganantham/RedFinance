@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Holding } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ArrowDown, ArrowUp, DollarSign, Percent, TrendingUp, Wallet } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { Skeleton } from './ui/skeleton';
 
 type PortfolioSummaryProps = {
   holdings: Holding[];
@@ -22,9 +23,16 @@ export default function PortfolioSummary({ holdings, portfolioXirr, benchmarkXir
     return { totalValue, totalGainLoss, gainLossPercentage };
   }, [holdings]);
   
-  // Mocked daily change
-  const dailyChange = useMemo(() => (Math.random() - 0.5) * totalValue * 0.05, [totalValue]);
-  const dailyChangePercentage = totalValue > 0 ? (dailyChange / (totalValue - dailyChange)) * 100 : 0;
+  const [dailyChange, setDailyChange] = useState<number | null>(null);
+  const [dailyChangePercentage, setDailyChangePercentage] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Calculate on client side to avoid hydration mismatch
+    const change = (Math.random() - 0.5) * totalValue * 0.05;
+    const percentage = totalValue > 0 ? (change / (totalValue - change)) * 100 : 0;
+    setDailyChange(change);
+    setDailyChangePercentage(percentage);
+  }, [totalValue]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -69,18 +77,33 @@ export default function PortfolioSummary({ holdings, portfolioXirr, benchmarkXir
        <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Day's Change</CardTitle>
-          {dailyChange >= 0 ? <ArrowUp className="h-4 w-4 text-green-400" /> : <ArrowDown className="h-4 w-4 text-red-400" />}
+           {dailyChange === null ? (
+            <div className="h-4 w-4" />
+          ) : dailyChange >= 0 ? (
+            <ArrowUp className="h-4 w-4 text-green-400" />
+          ) : (
+            <ArrowDown className="h-4 w-4 text-red-400" />
+          )}
         </CardHeader>
         <CardContent>
-          <div className={cn(
-              'text-2xl font-bold',
-              dailyChange >= 0 ? 'text-green-400' : 'text-red-400'
-            )}>
-            {formatCurrency(dailyChange)}
+          {dailyChange === null || dailyChangePercentage === null ? (
+            <div className="space-y-2 pt-1">
+              <Skeleton className="h-7 w-24" />
+              <Skeleton className="h-3 w-20" />
             </div>
-          <p className="text-xs text-muted-foreground">
-            {dailyChangePercentage.toFixed(2)}% today
-          </p>
+          ) : (
+            <>
+              <div className={cn(
+                'text-2xl font-bold',
+                dailyChange >= 0 ? 'text-green-400' : 'text-red-400'
+              )}>
+                {formatCurrency(dailyChange)}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {dailyChangePercentage.toFixed(2)}% today
+              </p>
+            </>
+          )}
         </CardContent>
       </Card>
       <Card>
