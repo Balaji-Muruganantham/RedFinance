@@ -4,18 +4,22 @@ import { useState, useMemo, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Person, Expense, SimplifiedDebt } from '@/lib/types';
+import type { Person, Expense, SimplifiedDebt, SplitGroup } from '@/lib/types';
 import { calculateBalances, simplifyDebts } from '@/lib/expense-splitter';
 import AddExpenseDialog from './add-expense-dialog';
 import BalancesSummary from './balances-summary';
 import ExpenseList from './expense-list';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, Timestamp } from 'firebase/firestore';
+import AddGroupDialog from './add-group-dialog';
+import GroupsList from './groups-list';
 
 export default function ExpenseSplitterPage() {
   const [people, setPeople] = useState<Person[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [groups, setGroups] = useState<SplitGroup[]>([]);
+  const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false);
+  const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false);
   const [simplifiedDebts, setSimplifiedDebts] = useState<SimplifiedDebt[]>([]);
   const { toast } = useToast();
 
@@ -52,11 +56,30 @@ export default function ExpenseSplitterPage() {
       });
       setExpenses(expensesData);
     });
+    
+    // Listener for groups
+    const groupsQuery = query(collection(db, 'groups'), orderBy('name', 'asc'));
+    const unsubscribeGroups = onSnapshot(groupsQuery, (querySnapshot) => {
+      const groupsData: SplitGroup[] = [];
+      querySnapshot.forEach((doc) => {
+        groupsData.push({ id: doc.id, ...doc.data() } as SplitGroup);
+      });
+      setGroups(groupsData);
+    }, (error) => {
+      console.error("Error fetching groups:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not fetch groups from the database.',
+      });
+    });
+
 
     // Cleanup listeners on unmount
     return () => {
       unsubscribePeople();
       unsubscribeExpenses();
+      unsubscribeGroups();
     };
   }, [toast]);
 
@@ -82,6 +105,23 @@ export default function ExpenseSplitterPage() {
       console.error("Error adding document: ", error);
     }
   };
+  
+  const handleAddGroup = async (group: Omit<SplitGroup, 'id'>) => {
+     try {
+      await addDoc(collection(db, 'groups'), group);
+      toast({
+          title: 'Group Created',
+          description: `The "${group.name}" group has been created and synced.`,
+      });
+    } catch (error) {
+       toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to create group. Please try again.',
+      });
+      console.error("Error adding group: ", error);
+    }
+  };
 
   const handleSimplifyDebts = () => {
     const simplified = simplifyDebts(balances, people);
@@ -100,31 +140,41 @@ export default function ExpenseSplitterPage() {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Expense Splitter</h2>
         <div className="flex items-center space-x-2">
+            <Button variant="outline" onClick={() => setIsGroupDialogOpen(true)} disabled={people.length < 2}>
+              <Plus className="mr-2 h-4 w-4" /> Add Group
+            </Button>
             <Button variant="outline" onClick={handleAddPerson}>
                 <Plus className="mr-2 h-4 w-4" /> Add Person
             </Button>
-            <Button onClick={() => setIsDialogOpen(true)} disabled={people.length === 0}>
+            <Button onClick={() => setIsExpenseDialogOpen(true)} disabled={people.length === 0}>
                 <Plus className="mr-2 h-4 w-4" /> Add Expense
             </Button>
         </div>
       </div>
       <div className="grid lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-6">
             <BalancesSummary 
                 balances={balances}
                 people={people}
                 simplifiedDebts={simplifiedDebts}
                 onSimplify={handleSimplifyDebts}
             />
+            <GroupsList groups={groups} people={people} />
         </div>
         <div className="lg:col-span-3">
             <ExpenseList expenses={expenses} people={people} />
         </div>
       </div>
       <AddExpenseDialog 
-        isOpen={isDialogOpen}
-        setIsOpen={setIsDialogOpen}
+        isOpen={isExpenseDialogOpen}
+        setIsOpen={setIsExpenseDialogOpen}
         onAddExpense={handleAddExpense}
+        people={people}
+      />
+      <AddGroupDialog 
+        isOpen={isGroupDialogOpen}
+        setIsOpen={setIsGroupDialogOpen}
+        onAddGroup={handleAddGroup}
         people={people}
       />
     </div>

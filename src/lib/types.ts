@@ -50,3 +50,9 @@ export type SimplifiedDebt = {
   to: Person;
   amount: number;
 };
+
+export type SplitGroup = {
+  id: string;
+  name: string;
+  memberIds: string[];
+};
