@@ -1,4 +1,4 @@
-import type { Holding, Transaction, PortfolioSnapshot } from './types';
+import type { Holding, Transaction, PortfolioSnapshot, Person, Expense } from './types';
 
 export const mockHoldings: Holding[] = [
   { id: '1', type: 'Stock', ticker: 'RELIANCE.NS', name: 'Reliance Industries Ltd.', quantity: 50, price: 2850.50, costBasis: 2400.00, sector: 'Conglomerate' },
@@ -86,3 +86,46 @@ export const mockXirr = {
   portfolio: 15.2,
   benchmark: 12.5,
 };
+
+// Mock data for Expense Splitter
+export const mockPeople: Person[] = [
+  { id: 'p1', name: 'Aarav' },
+  { id: 'p2', name: 'Diya' },
+  { id: 'p3', name: 'Rohan' },
+  { id: 'p4', name: 'Priya' },
+];
+
+export const mockExpenses: Expense[] = [
+  {
+    id: 'e1',
+    description: 'Dinner at the restaurant',
+    amount: 3000,
+    paidById: 'p1', // Aarav paid
+    participantIds: ['p1', 'p2', 'p3', 'p4'], // Everyone participated
+    date: '2024-07-20T20:00:00Z',
+  },
+  {
+    id: 'e2',
+    description: 'Movie tickets',
+    amount: 1200,
+    paidById: 'p2', // Diya paid
+    participantIds: ['p2', 'p3'], // Diya and Rohan
+    date: '2024-07-21T18:30:00Z',
+  },
+  {
+    id: 'e3',
+    description: 'Groceries for the trip',
+    amount: 2500,
+    paidById: 'p4', // Priya paid
+    participantIds: ['p1', 'p2', 'p4'], // Aarav, Diya, and Priya
+    date: '2024-07-22T10:00:00Z',
+  },
+  {
+    id: 'e4',
+    description: 'Cab fare',
+    amount: 800,
+    paidById: 'p3', // Rohan paid
+    participantIds: ['p1', 'p3'], // Aarav and Rohan
+    date: '2024-07-22T22:00:00Z',
+  },
+];

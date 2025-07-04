@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { mockHoldings, mockTransactions, mockPortfolioHistory, mockXirr } from '@/lib/mock-data';
 import type { Holding, Transaction, PortfolioSnapshot } from '@/lib/types';
-import { Bot, FileUp, Landmark, Plus, ListTree } from 'lucide-react';
+import { Bot, FileUp, Landmark, Plus, ListTree, ReceiptText } from 'lucide-react';
 import AddEditHoldingDialog from './add-edit-holding-dialog';
 import AiAnalysisView from './ai-analysis-view';
 import AllocationChart from './allocation-chart';
@@ -17,6 +17,7 @@ import PortfolioSummary from './portfolio-summary';
 import TransactionsTable from './transactions-table';
 import DetailedHoldingsView from './detailed-holdings-view';
 import PortfolioGrowthChart from './portfolio-growth-chart';
+import ExpenseSplitterPage from './expense-splitter-page';
 
 export default function PortfolioPage() {
   const [holdings, setHoldings] = useState<Holding[]>(mockHoldings);
@@ -121,7 +122,7 @@ export default function PortfolioPage() {
       </header>
       <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-xl mb-4">
+          <TabsList className="grid w-full grid-cols-5 max-w-2xl mb-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="detailed-holdings">
               <ListTree className="mr-2 h-4 w-4" />
@@ -130,6 +131,9 @@ export default function PortfolioPage() {
             <TabsTrigger value="transactions">Transactions</TabsTrigger>
             <TabsTrigger value="ai-insights">
               <Bot className="mr-2 h-4 w-4" /> AI Insights
+            </TabsTrigger>
+            <TabsTrigger value="expense-splitter">
+              <ReceiptText className="mr-2 h-4 w-4" /> Expense Splitter
             </TabsTrigger>
           </TabsList>
           
@@ -175,6 +179,10 @@ export default function PortfolioPage() {
               selectedModel={selectedModel}
               onModelChange={setSelectedModel}
             />
+          </TabsContent>
+
+          <TabsContent value="expense-splitter">
+            <ExpenseSplitterPage />
           </TabsContent>
         </Tabs>
       </main>

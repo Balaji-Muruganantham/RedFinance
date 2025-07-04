@@ -29,3 +29,24 @@ export type PortfolioSnapshot = {
   portfolioValue: number;
   benchmarkValue: number;
 };
+
+// Types for Expense Splitter
+export type Person = {
+  id: string;
+  name: string;
+};
+
+export type Expense = {
+  id: string;
+  description: string;
+  amount: number;
+  paidById: string; // Person ID
+  participantIds: string[]; // Person IDs
+  date: string; // ISO string
+};
+
+export type SimplifiedDebt = {
+  from: Person;
+  to: Person;
+  amount: number;
+};
