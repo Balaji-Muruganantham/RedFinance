@@ -39,7 +39,7 @@ const formSchema = z.object({
 type AddExpenseDialogProps = {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  onAddExpense: (expense: Omit<Expense, 'id' | 'date'>) => void;
+  onAddExpense: (expense: Omit<Expense, 'id' | 'date'>) => void | Promise<void>;
   people: Person[];
 };
 
@@ -70,8 +70,8 @@ export default function AddExpenseDialog({
     }
   }, [form, isOpen, people]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    onAddExpense(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await onAddExpense(values);
     setIsOpen(false);
   }
 
