@@ -34,9 +34,9 @@ const IndicatorBadge = ({ indicator }: { indicator: Holding['categoryPriceIndica
 
 export default function MutualFundHoldingsTable({ holdings }: MutualFundHoldingsTableProps) {
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(value);
   };
   

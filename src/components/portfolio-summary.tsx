@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Holding } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { ArrowDown, ArrowUp, DollarSign, Percent, TrendingUp, Wallet } from 'lucide-react';
+import { ArrowDown, ArrowUp, Percent, TrendingUp, Wallet } from 'lucide-react';
 import { useMemo, useState, useEffect } from 'react';
 import { Skeleton } from './ui/skeleton';
 
@@ -35,9 +35,10 @@ export default function PortfolioSummary({ holdings, portfolioXirr, benchmarkXir
   }, [totalValue]);
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
+      maximumFractionDigits: 0,
     }).format(value);
   };
   
@@ -58,7 +59,7 @@ export default function PortfolioSummary({ holdings, portfolioXirr, benchmarkXir
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Gain / Loss</CardTitle>
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" className="h-4 w-4 text-muted-foreground fill-current"><path d="M128,24a104,104,0,1,0,104,104A104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V94.63a8,8,0,0,1,10.18-7.5l48,21.33a8,8,0,0,1,0,15.06l-48,21.34A8,8,0,0,1,120,136Z"></path></svg>
         </CardHeader>
         <CardContent>
           <div
@@ -123,7 +124,7 @@ export default function PortfolioSummary({ holdings, portfolioXirr, benchmarkXir
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{formatPercentage(benchmarkXirr)}</div>
-          <p className="text-xs text-muted-foreground">S&P 500 equivalent</p>
+          <p className="text-xs text-muted-foreground">NIFTY 50 equivalent</p>
         </CardContent>
       </Card>
     </div>

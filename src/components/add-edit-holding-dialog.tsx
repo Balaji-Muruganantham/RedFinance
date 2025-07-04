@@ -25,11 +25,11 @@ import { Holding } from '@/lib/types';
 import { useEffect } from 'react';
 
 const formSchema = z.object({
-  ticker: z.string().min(1, 'Ticker is required').max(10, 'Ticker is too long'),
+  ticker: z.string().min(1, 'Ticker is required').max(20, 'Ticker is too long'),
   name: z.string().min(1, 'Name is required'),
   quantity: z.coerce.number().positive('Quantity must be positive'),
-  price: z.coerce.number().positive('Price must be positive'),
-  costBasis: z.coerce.number().positive('Cost basis must be positive'),
+  price: z.coerce.number().positive('Current Price (INR) must be positive'),
+  costBasis: z.coerce.number().positive('Cost Basis (INR) must be positive'),
   sector: z.string().min(1, 'Sector is required'),
 });
 
@@ -104,7 +104,7 @@ export default function AddEditHoldingDialog({
                 <FormItem>
                   <FormLabel>Ticker Symbol</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., AAPL" {...field} />
+                    <Input placeholder="e.g., RELIANCE.NS" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,7 +117,7 @@ export default function AddEditHoldingDialog({
                 <FormItem>
                   <FormLabel>Company Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Apple Inc." {...field} />
+                    <Input placeholder="e.g., Reliance Industries" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,13 +130,13 @@ export default function AddEditHoldingDialog({
                 <FormItem>
                   <FormLabel>Sector</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Technology" {...field} />
+                    <Input placeholder="e.g., Conglomerate" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="quantity"
@@ -150,12 +150,25 @@ export default function AddEditHoldingDialog({
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price (INR)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="any" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
                <FormField
                 control={form.control}
                 name="costBasis"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cost Basis</FormLabel>
+                    <FormLabel>Cost Basis (INR)</FormLabel>
                     <FormControl>
                       <Input type="number" step="any" {...field} />
                     </FormControl>

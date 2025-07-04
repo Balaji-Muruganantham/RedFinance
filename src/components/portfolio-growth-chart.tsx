@@ -38,9 +38,9 @@ export default function PortfolioGrowthChart({ data }: PortfolioGrowthChartProps
   );
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -51,7 +51,7 @@ export default function PortfolioGrowthChart({ data }: PortfolioGrowthChartProps
       color: 'hsl(var(--primary))',
     },
     benchmarkValue: {
-      label: 'Benchmark',
+      label: 'NIFTY 50',
       color: 'hsl(var(--muted-foreground))',
     },
   } satisfies ChartConfig;
@@ -61,7 +61,7 @@ export default function PortfolioGrowthChart({ data }: PortfolioGrowthChartProps
       <CardHeader>
         <CardTitle>Portfolio Growth</CardTitle>
         <CardDescription>
-          Your portfolio's performance over time against the benchmark.
+          Your portfolio's performance over time against the NIFTY 50 benchmark.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -124,7 +124,7 @@ export default function PortfolioGrowthChart({ data }: PortfolioGrowthChartProps
                       <div className="text-sm text-muted-foreground">
                         {name === 'portfolioValue'
                           ? 'Your Portfolio'
-                          : 'Benchmark'}
+                          : 'NIFTY 50'}
                       </div>
                     </div>
                   )}

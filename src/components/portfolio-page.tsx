@@ -27,6 +27,7 @@ export default function PortfolioPage() {
   const [editingHolding, setEditingHolding] = useState<Holding | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<AnalyzePortfolioOutput | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>('googleai/gemini-2.0-flash');
   const { toast } = useToast();
 
   const handleAddHolding = (holding: Omit<Holding, 'id'>) => {
@@ -82,6 +83,7 @@ export default function PortfolioPage() {
         holdings: holdingsString,
         transactionHistory: transactionsString,
         assetAllocation: allocationString,
+        model: selectedModel,
       });
       setAiAnalysis(result);
     } catch (error) {
@@ -170,6 +172,8 @@ export default function PortfolioPage() {
               analysis={aiAnalysis}
               isLoading={isAiLoading}
               onRunAnalysis={runAiAnalysis}
+              selectedModel={selectedModel}
+              onModelChange={setSelectedModel}
             />
           </TabsContent>
         </Tabs>
